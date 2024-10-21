@@ -40,34 +40,38 @@ def fetch_repositories(page):
     else:
         print(f"Error fetching repositories: {response.status_code}, {response.text}")
 
-# Infinite loop to fetch repositories across all pages
+# Fetch repositories across pages (limited to first 5 pages for this example)
 page = 1
 while page <= 5:  # Limit to first 5 pages (500 repos)
     print(f"Fetching page {page}...")
     fetch_repositories(page)
     page += 1  # Move to the next page after each request
 
-# Generate a Pie Chart from the language counts
-def generate_pie_chart():
+# Generate a Bar Chart from the language counts
+def generate_bar_chart():
     languages = list(language_counts.keys())
     counts = list(language_counts.values())
 
-    plt.figure(figsize=(10, 7))
-    plt.pie(counts, labels=languages, autopct='%1.1f%%', startangle=140, colors=plt.cm.Paired.colors)
-    plt.title("Distribution of Programming Languages in Popular GitHub Repositories")
-    plt.axis('equal')  # Equal aspect ratio ensures the pie chart is circular.
+    plt.figure(figsize=(12, 6))  # Set the figure size
+    plt.bar(languages, counts, color='skyblue')
+    plt.xticks(rotation=45, ha='right')  # Rotate x labels for better readability
+    plt.title("Number of Repositories per Programming Language", pad=20)
+    plt.xlabel("Programming Languages")
+    plt.ylabel("Number of Repositories")
+    plt.tight_layout()
 
-    # Save the pie chart as a PNG image
-    plt.savefig('language_distribution_pie_chart.png')
-    plt.show()
+    # Save the bar chart as a PNG image
+    plt.savefig('language_distribution_bar_chart.png', bbox_inches='tight')
+    plt.show()  # Show the bar chart
+    plt.close()  # Close the figure window after showing it
 
-# Generate and save the pie chart
-generate_pie_chart()
+# Generate and save the bar chart
+generate_bar_chart()
 
 # Save language statistics in a markdown format
 with open('README.md', 'w') as f:
     f.write("# GitHub Language Distribution\n")
-    f.write("![Language Distribution](language_distribution_pie_chart.png)\n")
+    f.write("![Language Distribution Bar Chart](language_distribution_bar_chart.png)\n")
     f.write("\n## Language Statistics\n")
     for language, count in language_counts.items():
         f.write(f"- **{language}**: {count} repositories\n")
