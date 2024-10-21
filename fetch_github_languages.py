@@ -1,3 +1,4 @@
+import os
 import requests
 from collections import defaultdict
 import matplotlib.pyplot as plt
@@ -18,10 +19,14 @@ params = {
 # Dictionary to count the number of repositories per language
 language_counts = defaultdict(int)
 
+# Retrieve the personal access token from environment variables
+token = os.getenv('GITHUB_TOKEN')  # This will fetch the token from the environment
+
 # Function to fetch repositories and count languages
 def fetch_repositories(page):
     params['page'] = page  # Set the current page number
-    response = requests.get(url, params=params)
+    headers = {'Authorization': f'token {token}'}  # Set the authentication header
+    response = requests.get(url, params=params, headers=headers)
     
     # Check for rate limiting and handle it
     if response.status_code == 403:  # Rate limit exceeded
@@ -37,14 +42,18 @@ def fetch_repositories(page):
             language = repo['language']
             if language:  # Some repositories may not have a primary language set
                 language_counts[language] += 1
+        return len(repositories['items'])  # Return the number of items fetched
     else:
         print(f"Error fetching repositories: {response.status_code}, {response.text}")
+        return 0  # Return 0 if there's an error
 
-# Fetch repositories across pages (limited to first 5 pages for this example)
+# Fetch repositories across pages
 page = 1
-while page <= 10:  # Limit to first 10 pages (1000 repos)
+while True:
     print(f"Fetching page {page}...")
-    fetch_repositories(page)
+    num_repos = fetch_repositories(page)
+    if num_repos == 0:  # Stop if no repositories were fetched
+        break
     page += 1  # Move to the next page after each request
 
 # Generate a Bar Chart from the language counts
@@ -70,7 +79,9 @@ generate_bar_chart()
 
 # Save language statistics in a markdown format
 with open('README.md', 'w') as f:
-    f.write("# GitHub Language Distribution\n")
+    # Writing the title and description for the README
+    f.write("# GitHub Repository Language Distribution Analyzer\n")
+    f.write("This project analyzes the most starred repositories on GitHub to determine the distribution of programming languages used. The findings are visualized in a bar chart and documented below.\n")
     f.write("![Language Distribution Bar Chart](language_distribution_bar_chart.png)\n")
     f.write("\n## Language Statistics\n")
     for language, count in language_counts.items():
