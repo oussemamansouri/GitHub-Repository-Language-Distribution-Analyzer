@@ -42,7 +42,7 @@ def fetch_repositories(page):
 
 # Fetch repositories across pages (limited to first 5 pages for this example)
 page = 1
-while page <= 5:  # Limit to first 5 pages (500 repos)
+while page <= 10:  # Limit to first 10 pages (1000 repos)
     print(f"Fetching page {page}...")
     fetch_repositories(page)
     page += 1  # Move to the next page after each request
