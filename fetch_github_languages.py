@@ -3,6 +3,7 @@ import requests
 from collections import defaultdict
 import matplotlib.pyplot as plt
 import time
+from datetime import datetime
 
 # GitHub REST API endpoint for repositories
 url = 'https://api.github.com/search/repositories'
@@ -19,21 +20,21 @@ params = {
 # Dictionary to count the number of repositories per language
 language_counts = defaultdict(int)
 
-# Retrieve the personal access token from environment variables
-token = os.getenv('GITHUB_TOKEN')  # This will fetch the token from the environment
+# Function to check rate limit status
+def check_rate_limit():
+    response = requests.get('https://api.github.com/rate_limit')
+    if response.status_code == 200:
+        limits = response.json()['rate']
+        return limits['remaining'], limits['reset']  # remaining requests and reset time
+    else:
+        print("Error checking rate limit:", response.status_code)
+        return 0, 0
 
 # Function to fetch repositories and count languages
 def fetch_repositories(page):
     params['page'] = page  # Set the current page number
-    headers = {'Authorization': f'token {token}'}  # Set the authentication header
-    response = requests.get(url, params=params, headers=headers)
+    response = requests.get(url, params=params)
     
-    # Check for rate limiting and handle it
-    if response.status_code == 403:  # Rate limit exceeded
-        print("Rate limit reached. Waiting for reset...")
-        time.sleep(3600)  # Wait for 1 hour (3600 seconds) to reset the rate limit
-        return fetch_repositories(page)  # Retry the same page after the wait
-
     # Check if the request was successful
     if response.status_code == 200:
         repositories = response.json()
@@ -50,11 +51,20 @@ def fetch_repositories(page):
 # Fetch repositories across pages
 page = 1
 while True:
+    remaining, reset_time = check_rate_limit()
+    if remaining <= 1:  # If you're close to hitting the limit
+        wait_time = reset_time - int(time.time()) + 1  # Calculate how long to wait
+        print(f"Rate limit reached. Waiting for {wait_time} seconds...")
+        time.sleep(wait_time)
+    
     print(f"Fetching page {page}...")
     num_repos = fetch_repositories(page)
     if num_repos == 0:  # Stop if no repositories were fetched
         break
     page += 1  # Move to the next page after each request
+
+# Calculate total repositories
+total_repositories = sum(language_counts.values())
 
 # Generate a Bar Chart from the language counts
 def generate_bar_chart():
@@ -62,9 +72,10 @@ def generate_bar_chart():
     counts = list(language_counts.values())
 
     plt.figure(figsize=(12, 6))  # Set the figure size
+    last_change_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")  # Get the current date and time
     plt.bar(languages, counts, color='skyblue')
     plt.xticks(rotation=45, ha='right')  # Rotate x labels for better readability
-    plt.title("Number of Repositories per Programming Language", pad=20)
+    plt.title(f"Number of Repositories per Programming Language (Last Updated: {last_change_time}, Total Repos: {total_repositories})", pad=20)
     plt.xlabel("Programming Languages")
     plt.ylabel("Number of Repositories")
     plt.tight_layout()
@@ -83,6 +94,12 @@ with open('README.md', 'w') as f:
     f.write("# GitHub Repository Language Distribution Analyzer\n")
     f.write("This project analyzes the most starred repositories on GitHub to determine the distribution of programming languages used. The findings are visualized in a bar chart and documented below.\n")
     f.write("![Language Distribution Bar Chart](language_distribution_bar_chart.png)\n")
+    
+    # Get the current date and time
+    last_change_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    f.write(f"\nLast Updated: {last_change_time}\n")  # Add last updated time
+    f.write(f"\n## Total Repositories Analyzed: {total_repositories}\n")  # Add total repositories
+    
     f.write("\n## Language Statistics\n")
     for language, count in language_counts.items():
         f.write(f"- **{language}**: {count} repositories\n")
