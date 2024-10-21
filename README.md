@@ -1,57 +1,53 @@
-# GitHub Language Distribution
+# GitHub Repository Language Distribution Analyzer
+This project analyzes the most starred repositories on GitHub to determine the distribution of programming languages used. The findings are visualized in a bar chart and documented below.
 ![Language Distribution Bar Chart](language_distribution_bar_chart.png)
 
+Last Updated: 2024-10-21 21:02:57
+
+## Total Repositories Analyzed: 893
+
 ## Language Statistics
-- **TypeScript**: 115 repositories
-- **Python**: 138 repositories
-- **JavaScript**: 159 repositories
-- **C**: 28 repositories
-- **Shell**: 19 repositories
-- **Dart**: 8 repositories
-- **Java**: 69 repositories
-- **Go**: 87 repositories
-- **HTML**: 27 repositories
-- **C#**: 21 repositories
-- **Dockerfile**: 1 repositories
-- **Rust**: 25 repositories
-- **Vue**: 7 repositories
-- **Vim Script**: 6 repositories
-- **C++**: 43 repositories
-- **Clojure**: 1 repositories
-- **Nunjucks**: 1 repositories
-- **MDX**: 1 repositories
+- **Python**: 169 repositories
+- **Markdown**: 2 repositories
+- **JavaScript**: 154 repositories
+- **C**: 35 repositories
+- **Shell**: 16 repositories
+- **Java**: 55 repositories
+- **Go**: 65 repositories
+- **HTML**: 21 repositories
+- **C#**: 18 repositories
+- **Rust**: 33 repositories
+- **TypeScript**: 113 repositories
+- **C++**: 52 repositories
 - **PHP**: 21 repositories
-- **Ruby**: 16 repositories
-- **Assembly**: 2 repositories
-- **TeX**: 4 repositories
-- **Jupyter Notebook**: 30 repositories
-- **Batchfile**: 2 repositories
-- **Swift**: 12 repositories
-- **Kotlin**: 8 repositories
+- **Zig**: 1 repositories
+- **Jupyter Notebook**: 18 repositories
+- **Dockerfile**: 5 repositories
+- **Scala**: 4 repositories
+- **Nunjucks**: 2 repositories
+- **Assembly**: 4 repositories
+- **Ruby**: 9 repositories
+- **CSS**: 6 repositories
+- **MDX**: 3 repositories
+- **Dart**: 7 repositories
+- **Vue**: 5 repositories
+- **Clojure**: 3 repositories
+- **Vim Script**: 6 repositories
+- **Kotlin**: 9 repositories
+- **Jinja**: 2 repositories
+- **Swift**: 21 repositories
+- **ActionScript**: 1 repositories
+- **Objective-C**: 8 repositories
+- **GDScript**: 1 repositories
+- **TeX**: 2 repositories
 - **Elixir**: 2 repositories
-- **SCSS**: 4 repositories
-- **CSS**: 7 repositories
-- **Starlark**: 1 repositories
-- **CoffeeScript**: 4 repositories
-- **Markdown**: 1 repositories
-- **Jinja**: 1 repositories
-- **Perl**: 1 repositories
-- **Lua**: 4 repositories
-- **Meson**: 1 repositories
-- **Cuda**: 1 repositories
-- **Makefile**: 1 repositories
-- **Vim script**: 2 repositories
-- **Objective-C**: 6 repositories
-- **Svelte**: 1 repositories
-- **Sass**: 1 repositories
-- **Pascal**: 1 repositories
-- **YARA**: 1 repositories
-- **Objective-C++**: 1 repositories
-- **D**: 1 repositories
-- **Haskell**: 2 repositories
-- **Scala**: 2 repositories
-- **Bikeshed**: 1 repositories
-- **Astro**: 1 repositories
-- **Rich Text Format**: 1 repositories
+- **CoffeeScript**: 3 repositories
 - **PowerShell**: 1 repositories
-- **Matlab**: 1 repositories
+- **SCSS**: 1 repositories
+- **Lua**: 9 repositories
+- **Less**: 1 repositories
+- **OCaml**: 1 repositories
+- **Pascal**: 1 repositories
+- **ApacheConf**: 1 repositories
+- **Nix**: 1 repositories
+- **Batchfile**: 1 repositories
