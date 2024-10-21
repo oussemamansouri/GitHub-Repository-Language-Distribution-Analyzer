@@ -1,0 +1,28 @@
+name: Daily Update
+
+on:
+  schedule:
+    - cron: '0 2 * * *'  # Every day at 2 AM
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: |
+          pip install requests matplotlib
+
+      - name: Run script
+        run: |
+          python fetch_github_languages.py
+          git add README.md language_distribution_bar_chart.png
+          git commit -m "Update language distribution data" || echo "No changes to commit"
+          git push
