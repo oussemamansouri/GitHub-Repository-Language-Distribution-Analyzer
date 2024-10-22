@@ -2,7 +2,7 @@ name: Daily Update
 
 on:
   schedule:
-    # Run every 4 hours (5 times a day)
+    # Run 2 times a day)
     - cron: '*/2 * * * *'
 
 jobs:
