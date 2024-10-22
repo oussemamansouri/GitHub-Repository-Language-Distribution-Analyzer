@@ -3,7 +3,7 @@ name: Daily Update
 on:
   schedule:
     # Run 2 times a day)
-    - cron: '*/2 * * * *'
+    - cron: '0 0 * * *'
 
 jobs:
   update:
