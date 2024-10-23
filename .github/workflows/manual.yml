@@ -2,18 +2,18 @@ name: Daily Update
 
 on:
   schedule:
-    # Run every 4 hours (5 times a day)
-    - cron: '0 */4 * * *'  # At minute 0 past every 4th hour
+    # Run 2 times a day)
+    - cron: '0 0 * * *'
 
 jobs:
   update:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3  # Updated to v3
 
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4  # Updated to v4
         with:
           python-version: '3.x'
 
