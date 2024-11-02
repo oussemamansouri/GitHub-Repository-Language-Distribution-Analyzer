@@ -1,10 +1,9 @@
-
 name: Analyze Language Distribution
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: '*/15 * * * *' # Runs daily at midnight
+    - cron: '*/15 * * * *' # Runs every 15 minutes
 
 jobs:
   analyze:
@@ -12,6 +11,16 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x' 
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install matplotlib requests  
 
       - name: Set up Git user
         run: |
@@ -22,7 +31,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.ACTION_TOKEN }}
         run: |
-          python fetch_github_languages.py 
+          python fetch_github_languages.py  
 
       - name: Push changes
         env:
