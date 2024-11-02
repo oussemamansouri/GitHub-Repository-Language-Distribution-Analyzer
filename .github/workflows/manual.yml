@@ -21,7 +21,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.ACTION_TOKEN }}
         run: |
-          python your_script.py  # Replace 'your_script.py' with the actual script name
+          python fetch_github_languages.py  # Replace 'your_script.py' with the actual script name
 
       - name: Push changes
         env:
