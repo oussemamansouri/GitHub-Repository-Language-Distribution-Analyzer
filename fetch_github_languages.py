@@ -7,6 +7,8 @@ from datetime import datetime
 
 # GitHub REST API endpoint for repositories
 url = 'https://api.github.com/search/repositories'
+headers = {'Authorization': f'token {os.getenv("ACTION_TOKEN")}'}
+
 
 # Query parameters (searching for repositories with at least 1 star)
 params = {
@@ -33,7 +35,7 @@ def check_rate_limit():
 # Function to fetch repositories and count languages
 def fetch_repositories(page):
     params['page'] = page  # Set the current page number
-    response = requests.get(url, params=params)
+    response = requests.get(url, headers=headers, params=params)
     
     # Check if the request was successful
     if response.status_code == 200:
