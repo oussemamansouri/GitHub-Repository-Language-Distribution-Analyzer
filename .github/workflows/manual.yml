@@ -1,29 +1,32 @@
-name: Daily Update
+name: Analyze Language Distribution
 
 on:
+  workflow_dispatch:
   schedule:
-    # Run 2 times a day)
-    - cron: '0 0 * * *'
+    - cron: '*/15 * * * *' # Runs daily at midnight
 
 jobs:
-  update:
+  analyze:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3  # Updated to v3
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-      - name: Set up Python
-        uses: actions/setup-python@v4  # Updated to v4
-        with:
-          python-version: '3.x'
-
-      - name: Install dependencies
+      - name: Set up Git user
         run: |
-          pip install requests matplotlib
+          git config --global user.name "GitHub Actions Bot"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Run script
+      - name: Run language distribution script
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          python fetch_github_languages.py
+          python your_script.py  # Replace 'your_script.py' with the actual script name
+
+      - name: Push changes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
           git add README.md language_distribution_bar_chart.png
-          git commit -m "Update language distribution data" || echo "No changes to commit"
+          git commit -m "Update language distribution chart"
           git push
