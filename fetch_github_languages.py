@@ -13,60 +13,55 @@ headers = {
     'Authorization': f'token {os.getenv("ACTION_TOKEN")}'
 }
 
-# Query parameters (searching for repositories with at least 1 star)
+# Query parameters
 params = {
     'q': 'stars:>0',
     'sort': 'stars',
     'order': 'desc',
-    'per_page': 100,  # Max number of repositories per request
-    'page': 1  # Start at page 1
+    'per_page': 100,
+    'page': 1
 }
 
-# Dictionary to count the number of repositories per language
 language_counts = defaultdict(int)
 
-# Function to check rate limit status
 def check_rate_limit():
     response = requests.get('https://api.github.com/rate_limit', headers=headers)
     if response.status_code == 200:
         limits = response.json()['rate']
-        return limits['remaining'], limits['reset']  # remaining requests and reset time
+        return limits['remaining'], limits['reset']
+    elif response.status_code == 401:
+        print("Error checking rate limit: Unauthorized (401). Check GITHUB_TOKEN.")
     else:
-        print("Error checking rate limit:", response.status_code)
-        return 0, 0
+        print(f"Error checking rate limit: {response.status_code}")
+    return 0, int(time.time()) + 60  # Retry after 1 minute if there's an error
 
-# Function to fetch repositories and count languages
 def fetch_repositories(page):
-    params['page'] = page  # Set the current page number
+    params['page'] = page
     response = requests.get(url, headers=headers, params=params)
     
-    # Check if the request was successful
     if response.status_code == 200:
         repositories = response.json()
-        # Count the primary language for each repository
         for repo in repositories['items']:
             language = repo['language']
-            if language:  # Some repositories may not have a primary language set
+            if language:
                 language_counts[language] += 1
-        return len(repositories['items'])  # Return the number of items fetched
+        return len(repositories['items'])
     else:
         print(f"Error fetching repositories: {response.status_code}, {response.text}")
-        return 0  # Return 0 if there's an error
+        return 0
 
-# Fetch repositories across pages
 page = 1
 while True:
     remaining, reset_time = check_rate_limit()
-    if remaining <= 1:  # If you're close to hitting the limit
-        wait_time = reset_time - int(time.time()) + 1  # Calculate how long to wait
+    if remaining <= 1:
+        wait_time = max(0, reset_time - int(time.time()) + 1)
         print(f"Rate limit reached. Waiting for {wait_time} seconds...")
         time.sleep(wait_time)
     
     print(f"Fetching page {page}...")
     num_repos = fetch_repositories(page)
-    if num_repos == 0:  # Stop if no repositories were fetched
+    if num_repos == 0:
         break
-    page += 1  # Move to the next page after each request
+    page += 1
 
-# Calculate total repositories
 total_repositories = sum(language_counts.values())
