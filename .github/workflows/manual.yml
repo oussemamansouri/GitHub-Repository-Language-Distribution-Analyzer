@@ -3,7 +3,7 @@ name: Analyze Language Distribution
 on:
   workflow_dispatch:
   schedule:
-    - cron: '* * * * *' 
+    - cron: '0 0 * * *' 
 
 jobs:
   analyze:
