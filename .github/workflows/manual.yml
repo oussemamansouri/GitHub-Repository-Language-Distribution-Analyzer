@@ -19,13 +19,13 @@ jobs:
 
       - name: Run language distribution script
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.ACTION_TOKEN }}
         run: |
           python your_script.py  # Replace 'your_script.py' with the actual script name
 
       - name: Push changes
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.ACTION_TOKEN }}
         run: |
           git add README.md language_distribution_bar_chart.png
           git commit -m "Update language distribution chart"
