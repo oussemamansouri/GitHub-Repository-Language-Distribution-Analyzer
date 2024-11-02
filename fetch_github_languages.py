@@ -7,8 +7,11 @@ from datetime import datetime
 
 # GitHub REST API endpoint for repositories
 url = 'https://api.github.com/search/repositories'
-headers = {'Authorization': f'token {os.getenv("ACTION_TOKEN")}'}
 
+# Set up the authorization header
+headers = {
+    'Authorization': f'token {os.getenv("ACTION_TOKEN")}'
+}
 
 # Query parameters (searching for repositories with at least 1 star)
 params = {
@@ -24,7 +27,7 @@ language_counts = defaultdict(int)
 
 # Function to check rate limit status
 def check_rate_limit():
-    response = requests.get('https://api.github.com/rate_limit')
+    response = requests.get('https://api.github.com/rate_limit', headers=headers)
     if response.status_code == 200:
         limits = response.json()['rate']
         return limits['remaining'], limits['reset']  # remaining requests and reset time
@@ -67,41 +70,3 @@ while True:
 
 # Calculate total repositories
 total_repositories = sum(language_counts.values())
-
-# Generate a Bar Chart from the language counts
-def generate_bar_chart():
-    languages = list(language_counts.keys())
-    counts = list(language_counts.values())
-
-    plt.figure(figsize=(12, 6))  # Set the figure size
-    last_change_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")  # Get the current date and time
-    plt.bar(languages, counts, color='skyblue')
-    plt.xticks(rotation=45, ha='right')  # Rotate x labels for better readability
-    plt.title(f"Number of Repositories per Programming Language (Last Updated: {last_change_time}, Total Repos: {total_repositories})", pad=20)
-    plt.xlabel("Programming Languages")
-    plt.ylabel("Number of Repositories")
-    plt.tight_layout()
-
-    # Save the bar chart as a PNG image
-    plt.savefig('language_distribution_bar_chart.png', bbox_inches='tight')
-    plt.show()  # Show the bar chart
-    plt.close()  # Close the figure window after showing it
-
-# Generate and save the bar chart
-generate_bar_chart()
-
-# Save language statistics in a markdown format
-with open('README.md', 'w') as f:
-    # Writing the title and description for the README
-    f.write("# GitHub Repository Language Distribution Analyzer\n")
-    f.write("This project analyzes the most starred repositories on GitHub to determine the distribution of programming languages used. The findings are visualized in a bar chart and documented below.\n")
-    f.write("![Language Distribution Bar Chart](language_distribution_bar_chart.png)\n")
-    
-    # Get the current date and time
-    last_change_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    f.write(f"\nLast Updated: {last_change_time}\n")  # Add last updated time
-    f.write(f"\n## Total Repositories Analyzed: {total_repositories}\n")  # Add total repositories
-    
-    f.write("\n## Language Statistics\n")
-    for language, count in language_counts.items():
-        f.write(f"- **{language}**: {count} repositories\n")
