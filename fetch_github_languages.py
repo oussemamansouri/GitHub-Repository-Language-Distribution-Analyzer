@@ -2,6 +2,7 @@ import os
 import requests
 from collections import defaultdict
 import time
+import matplotlib.pyplot as plt
 from datetime import datetime
 
 # GitHub REST API endpoint for repositories
@@ -71,9 +72,26 @@ while True:
 total_repositories = sum(language_counts.values())
 print(f"Total repositories processed: {total_repositories}")
 
+# Create a bar chart image for language distribution
+def create_bar_chart(language_counts):
+    languages = list(language_counts.keys())
+    counts = list(language_counts.values())
+    
+    plt.figure(figsize=(10, 6))
+    plt.barh(languages, counts, color='skyblue')
+    plt.xlabel('Number of Repositories')
+    plt.title('Language Distribution in GitHub Repositories')
+    plt.gca().invert_yaxis()  # Invert y axis for better visibility
+    plt.tight_layout()
+    plt.savefig('language_distribution_bar_chart.png')
+    plt.close()
+
+create_bar_chart(language_counts)
+
 # Write the language distribution to README.md
 with open('README.md', 'w') as readme:
     readme.write(f"# Language Distribution\n\n")
+    readme.write(f"![Language Distribution Chart](language_distribution_bar_chart.png)\n\n")
     readme.write(f"Total repositories processed: {total_repositories}\n\n")
     readme.write("Language distribution:\n")
     
@@ -84,4 +102,4 @@ with open('README.md', 'w') as readme:
     # Add a timestamp to force a commit
     readme.write(f"\n\n_Last updated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}_\n")
 
-print("README.md has been updated with the latest language distribution.")
+print("README.md has been updated with the latest language distribution and bar chart.")
