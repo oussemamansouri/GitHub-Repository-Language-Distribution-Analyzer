@@ -78,7 +78,7 @@ def create_bar_chart(language_counts):
     counts = list(language_counts.values())
     
     plt.figure(figsize=(10, 6))
-    plt.barh(languages, counts, color='skyblue')
+    plt.barh(counts, languages, color='skyblue')
     plt.xlabel('Number of Repositories')
     plt.title('Language Distribution in GitHub Repositories')
     plt.gca().invert_yaxis()  # Invert y axis for better visibility
