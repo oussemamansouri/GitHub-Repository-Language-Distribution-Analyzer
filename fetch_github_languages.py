@@ -1,16 +1,14 @@
 import os
 import requests
 from collections import defaultdict
-import matplotlib.pyplot as plt
 import time
-from datetime import datetime
 
 # GitHub REST API endpoint for repositories
 url = 'https://api.github.com/search/repositories'
 
 # Set up the authorization header
 headers = {
-    'Authorization': f'token {os.getenv("GITHUB_TOKEN")}'
+    'Authorization': f'Bearer {os.getenv("GITHUB_TOKEN")}'
 }
 
 # Query parameters
@@ -38,7 +36,7 @@ def check_rate_limit():
 def fetch_repositories(page):
     params['page'] = page
     response = requests.get(url, headers=headers, params=params)
-    
+
     if response.status_code == 200:
         repositories = response.json()
         for repo in repositories['items']:
@@ -46,6 +44,10 @@ def fetch_repositories(page):
             if language:
                 language_counts[language] += 1
         return len(repositories['items'])
+    elif response.status_code == 403:
+        print("Hit secondary rate limit. Waiting before retrying...")
+        time.sleep(60)  # Wait 1 minute to respect the rate limit
+        return fetch_repositories(page)  # Retry fetching the page
     else:
         print(f"Error fetching repositories: {response.status_code}, {response.text}")
         return 0
@@ -63,5 +65,7 @@ while True:
     if num_repos == 0:
         break
     page += 1
+    time.sleep(2)  # Add a delay between requests to avoid secondary rate limits
 
 total_repositories = sum(language_counts.values())
+print(f"Total repositories processed: {total_repositories}")
