@@ -2,6 +2,7 @@ import os
 import requests
 from collections import defaultdict
 import time
+from datetime import datetime
 
 # GitHub REST API endpoint for repositories
 url = 'https://api.github.com/search/repositories'
@@ -52,20 +53,30 @@ def fetch_repositories(page):
         print(f"Error fetching repositories: {response.status_code}, {response.text}")
         return 0
 
-page = 1
-while True:
-    remaining, reset_time = check_rate_limit()
-    if remaining <= 1:
-        wait_time = max(0, reset_time - int(time.time()) + 1)
-        print(f"Rate limit reached. Waiting for {wait_time} seconds...")
-        time.sleep(wait_time)
-    
-    print(f"Fetching page {page}...")
-    num_repos = fetch_repositories(page)
-    if num_repos == 0:
-        break
-    page += 1
-    time.sleep(2)  # Add a delay between requests to avoid secondary rate limits
+# Break down query by years to avoid the 1000 result limit
+years = range(2020, datetime.now().year + 1)  # e.g., from 2020 to current year
+
+for year in years:
+    print(f"Fetching repositories created in {year}...")
+    params['q'] = f'stars:>0 created:{year}-01-01..{year}-12-31'
+    page = 1
+
+    while True:
+        remaining, reset_time = check_rate_limit()
+        if remaining <= 1:
+            wait_time = max(0, reset_time - int(time.time()) + 1)
+            print(f"Rate limit reached. Waiting for {wait_time} seconds...")
+            time.sleep(wait_time)
+
+        print(f"Fetching page {page} for year {year}...")
+        num_repos = fetch_repositories(page)
+        if num_repos == 0 or (page * 100) >= 1000:  # Stop if no results or hit 1000 results limit
+            break
+        page += 1
+        time.sleep(2)  # Add delay to avoid hitting secondary rate limits
 
 total_repositories = sum(language_counts.values())
 print(f"Total repositories processed: {total_repositories}")
+print("Language distribution:")
+for language, count in language_counts.items():
+    print(f"{language}: {count}")
