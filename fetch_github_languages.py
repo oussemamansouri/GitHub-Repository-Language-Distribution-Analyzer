@@ -76,9 +76,11 @@ with open('README.md', 'w') as readme:
     readme.write(f"# Language Distribution\n\n")
     readme.write(f"Total repositories processed: {total_repositories}\n\n")
     readme.write("Language distribution:\n")
-    for language, count in language_counts.items():
-        readme.write(f"{language}: {count}\n")
     
+    # Create a single line of languages and counts
+    language_line = ', '.join(f"{language}: {count}" for language, count in language_counts.items())
+    readme.write(f"{language_line}\n")
+
     # Add a timestamp to force a commit
     readme.write(f"\n\n_Last updated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}_\n")
 
