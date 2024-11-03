@@ -27,6 +27,17 @@ jobs:
           git config --global user.name "GitHub Actions Bot"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
+      - name: Debug token visibility
+        run: |
+            if [ -z "$GITHUB_TOKEN" ]; then
+              echo "GITHUB_TOKEN is not set"
+            else
+              echo "GITHUB_TOKEN is set"
+            fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+
       - name: Run language distribution script
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
