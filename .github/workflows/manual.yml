@@ -29,14 +29,15 @@ jobs:
 
       - name: Run language distribution script
         env:
-          GITHUB_TOKEN: ${{ secrets.ACTION_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           python fetch_github_languages.py  
 
       - name: Push changes
         env:
-          GITHUB_TOKEN: ${{ secrets.ACTION_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git add README.md language_distribution_bar_chart.png
           git commit -m "Update language distribution chart"
           git push
+
