@@ -10,7 +10,7 @@ url = 'https://api.github.com/search/repositories'
 
 # Set up the authorization header
 headers = {
-    'Authorization': f'token {os.getenv("ACTION_TOKEN")}'
+    'Authorization': f'token {os.getenv("GITHUB_TOKEN")}'
 }
 
 # Query parameters
