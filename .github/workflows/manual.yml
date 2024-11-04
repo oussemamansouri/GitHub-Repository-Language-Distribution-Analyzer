@@ -24,8 +24,8 @@ jobs:
 
       - name: Set up Git user
         run: |
-          git config --global user.name "GitHub Actions Bot"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "oussemamansouri"
+          git config --global user.email "oussemamansouri619@gmail.com"
 
       - name: Debug token visibility
         run: |
